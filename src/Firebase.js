@@ -75,21 +75,19 @@ export class FirebaseProvider {
     }
 
     sendEmail(userId) {
-        const mailRef = firebase.database().ref.child(`mail`);
-        // get new key
-        let newMailKey = firebase.database().ref().child('posts').push().key;
-
-        // populate data
-        let updates = {};
-        updates['/mail/' + newMailKey] = {
+        // will automatically create id for the new document
+        this.db.collection("mail").add({
             to: ["rpshukla@ualberta.ca"],
             message: {
                 subject: "EMERGENCY",
                 text: "There has been an emergency.",
             }
-        };
-
-        // send data
-        firebase.database().ref().update(updates);
+        })
+        .then(function(docRef) {
+            console.log("Email written to database with id: ", docRef.id);
+        })
+        .catch(function(error) {
+            console.error("Error writing email to database: ", error);
+        });
     }
 }
