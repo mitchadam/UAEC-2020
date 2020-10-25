@@ -101,12 +101,6 @@ export default function App() {
 const HomeScreen = ({navigation}) => {
 
   const [detectedUser, setDetectedUser] = useState("");
-
-  const onSetDetectedUser = (usr) => {
-    console.log(usr);
-    setDetectedUser(usr);
-  }
-
   const [householdId, setHouseholdId] = useState('');
 
   const handleSelectUserButton = () => {
@@ -119,6 +113,7 @@ const HomeScreen = ({navigation}) => {
         'userId',
         uId
       );
+      setDetectedUser(uId);
     } catch (error) {
       console.log("Error setting user from PLS");
     }
@@ -188,7 +183,7 @@ const HomeScreen = ({navigation}) => {
           style={styles.userButton}
           onPress={() =>
             navigation.navigate('Camera', {
-              onSetDetectedUser: onSetDetectedUser,
+              onSetDetectedUser: setUser,
             })
           }
         >

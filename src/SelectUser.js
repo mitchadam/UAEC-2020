@@ -58,6 +58,7 @@ const selectUserRow = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         width: '100%',
+        height: '20%',
         justifyContent: 'center',
         paddingVertical: 20
     }
