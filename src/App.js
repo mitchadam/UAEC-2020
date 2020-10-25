@@ -1,5 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import { SelectUserScreen } from './SelectUser'
 import React, {useEffect, useState} from 'react';
 import {AsyncStorage, Linking, Text, TouchableOpacity, View} from 'react-native';
 import {AddressScreen} from './AddressScreen';
@@ -79,6 +80,10 @@ export default function App() {
           component={AddressScreen}
         />
         <Stack.Screen
+          name="SelectUserScreen"
+          component={SelectUserScreen}
+        />
+        <Stack.Screen
           name="AddUserScreen"
           component={AddUserScreen}
         />
@@ -102,10 +107,25 @@ const HomeScreen = ({navigation}) => {
 
   const [householdId, setHouseholdId] = useState('');
 
-  const handleAddressButton = (navigation) => {
+  const handleSelectUserButton = () => {
+    navigation.navigate('SelectUserScreen', {onUserSelect: setUser, householdId: householdId});
+  }
+
+  const setUser = async (uId) => {
+    try {
+      await AsyncStorage.setItem(
+        'userId',
+        uId
+      );
+    } catch (error) {
+      console.log("Error setting user from PLS");
+    }
+  }
+
+  const handleAddressButton = () => {
     navigation.navigate('AddressScreen', {onAddressSave: setAddress});
   }
-  
+
   const setAddress = async (addressInfo) => {
     try {
       const address = new Address(
@@ -149,7 +169,7 @@ const HomeScreen = ({navigation}) => {
       </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
-        onPress={() => handleAddressButton(navigation)}
+        onPress={() => handleAddressButton()}
       >
         <Text style={styles.btnText}>Set Address</Text>
       </TouchableOpacity>
@@ -167,7 +187,6 @@ const HomeScreen = ({navigation}) => {
           onPress={() =>
             navigation.navigate('Camera', {
               onSetDetectedUser: onSetDetectedUser,
-              subjectId: "TESTUSR!"
             })
           }
         >
@@ -178,12 +197,14 @@ const HomeScreen = ({navigation}) => {
           !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
+            onPress={() => handleSelectUserButton()}
           >
             <Text style={styles.btnText}>Select User</Text>
           </TouchableOpacity>
         }
 
         {
+          !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
             onPress={() => onAddUser(navigation)}

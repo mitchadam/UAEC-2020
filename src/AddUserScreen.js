@@ -30,8 +30,9 @@ export default function AddUserScreen({route, navigation}) {
                 healthConditions: healthConditionsText,
             }
             onSaveUser(userInfo);
-            const popAction = StackActions.pop(1);
-            navigation.dispatch(popAction);
+            navigation.navigate('Camera', {
+                subjectId: firstNameText + " " + lastNameText
+            });
         }
     }
 
