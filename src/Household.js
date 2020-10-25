@@ -10,6 +10,10 @@ export class Address {
         this.province = province;
         this.postalCode = postalCode;
     }
+
+    toString() {
+        return `${this.street} ${this.city} ${this.province} ${this.postalCode}`;
+    }
 }
 
 export class FamilyMember {

@@ -1,13 +1,12 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
-import {Linking} from 'react-native'
-import { AddressScreen } from './AddressScreen'
-import { Permissions, Camera, FaceDetector, } from 'expo';
+import React, {useState} from 'react';
+import {Linking, Text, TouchableOpacity, View} from 'react-native';
+import {AddressScreen} from './AddressScreen';
 import CameraScreen from "./CameraScreen";
-import styles from './Styles'
+import {FirebaseProvider} from './Firebase';
+import {Address, FamilyMember, Household} from './Household';
+import styles from './Styles';
 
 const Stack = createStackNavigator();
 
@@ -28,26 +27,15 @@ const setAddress = (addressInfo) => {
 }
 
 const onAddUser = async () => {
-  FirebaseProvider.getInstance().storeHouseholdInfo({
-    address: {
-      street: "123 Main St",
-      city: "Edmonton",
-      province: "Alberta",
-      postalCode: "TN73X5"
-    },
-    familyMembers: [
-      {
-        firstName: "Nayan",
-        lastName: "Prakash",
-        phn: "123456789",
-        hin: "555555555",
-        medicalConditions: ["Depression"]
-      }
-    ]
-  });
-  const address = `${householdInfo.street} ${householdInfo.city} ${householdInfo.province} ${householdInfo.postalCode}`;
-  householdInfo = await FirebaseProvider.getInstance().retrieveHouseholdInfo(address);
-  console.log(householdInfo);
+  const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
+  const familyMembers = [
+    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"])
+  ];
+  const household = new Household(address, familyMembers);
+  await FirebaseProvider.getInstance().storeHousehold(household);
+  console.log(
+    await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
+  );
 }
 
 

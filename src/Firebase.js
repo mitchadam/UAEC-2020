@@ -56,11 +56,10 @@ export class FirebaseProvider {
 
   async getFrom(collection, doc) {
     try {
-      const querySnapshot = await db.collection(collection).doc(doc).get();
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-      });
-      return querySnapshot;
+      const docRef = await this.db.collection(collection).doc(doc).get();
+      const data = docRef.data();
+      console.log(data);
+      return data;
     } catch (error) {
       console.log("Error getting document: " + error);
     }
@@ -77,21 +76,18 @@ export class FirebaseProvider {
     });
   }
 
-  async storeHouseholdInfo(householdInfo) {
-    const address = householdInfo.address;
-    const addressString = `${address.street} ${address.city} ${address.province} ${address.postalCode}`;
-    await this.addTo("households", addressString, householdInfo);
+  async storeHousehold(household) {
+    await this.addTo("households", household.address.toString(), JSON.parse(JSON.stringify(household)));
   }
 
-  async retrieveHouseholdInfo(address) {
-    const querySnapshot = await this.getFrom("households", address);
-    const householdInfo = querySnapshot.val();
-    const addressData = householdInfo.address;
+  async retrieveHousehold(address) {
+    const household = await this.getFrom("households", address);
+    const addressData = household.address;
     const street = addressData.street;
     const city = addressData.city;
     const province = addressData.province;
     const postalCode = addressData.postalCode
-    const familyMembers = householdInfo.familyMembers;
+    const familyMembers = household.familyMembers;
     // iterates through each family member in a household
     for (const familyMember of familyMembers) {
       const firstName = familyMember.firstName;
@@ -101,6 +97,6 @@ export class FirebaseProvider {
       const medicalConditions = familyMember.medicalConditions;
       console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${province} ${postalCode}`);
     }
-    return householdInfo;
+    return household;
   }
 }
