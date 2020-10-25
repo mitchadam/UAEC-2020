@@ -20,27 +20,6 @@ const onEmergency = () => {
   console.log("Hello!");
 }
 
-const handleAddressButton = (navigation) => {
-  navigation.navigate('AddressScreen', {onAddressSave: setAddress});
-}
-
-const setAddress = async (addressInfo) => {
-  try {
-    const address = new Address(
-      addressInfo.street,
-      addressInfo.city,
-      addressCity.province,
-      addressCity.postalCode
-    );
-    await AsyncStorage.setItem(
-      'householdId',
-      new Household(address, null).toString()
-    )
-  } catch (error) {
-    console.log("Error saving householdId from PLS");
-  }
-}
-
 const onAddUser = async (navigation) => {
   navigation.navigate('AddUserScreen', {onUserSave: saveUser});
   const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
@@ -80,6 +59,7 @@ export default function App() {
 }
 
 const HomeScreen = ({navigation}) => {
+
   const [detectedUser, setDetectedUser] = useState("");
 
   const onSetDetectedUser = (usr) => {
@@ -88,6 +68,29 @@ const HomeScreen = ({navigation}) => {
   }
 
   const [householdId, setHouseholdId] = useState('');
+
+  const handleAddressButton = (navigation) => {
+    navigation.navigate('AddressScreen', {onAddressSave: setAddress});
+  }
+  
+  const setAddress = async (addressInfo) => {
+    try {
+      const address = new Address(
+        addressInfo.street,
+        addressInfo.city,
+        addressInfo.province,
+        addressInfo.postalCode
+      );
+      const hhId = address.toString();
+      await AsyncStorage.setItem(
+        'householdId',
+        hhId
+      )
+      setHouseholdId(hhId);
+    } catch (error) {
+      console.log("Error saving householdId from PLS");
+    }
+  }
 
   useEffect(() => {
     if (!householdId) {
