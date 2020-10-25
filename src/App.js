@@ -1,17 +1,45 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
- import {Linking} from 'react-native'
+import {Linking} from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
+const Stack = createStackNavigator();
 
 const onEmergency = () => {
 Linking.openURL(`tel:${7809348188}`)
 
 console.log("Hello!");
 }
+
+const handleAddressButton = () => {
+
+}
+
 export default function App() {
   return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const HomeScreen = ({ navigation }) => {
+  return (
     <View style={styles.container}>
+
+      <TouchableOpacity
+        style={styles.setAddressButton}
+        onPress={handleAddressButton}
+      >
+        <Text style={styles.btnText}>Set Address</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
           style={styles.emergencyButton}
