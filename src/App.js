@@ -12,7 +12,7 @@ import { Household, Address } from './Household'
 const Stack = createStackNavigator();
 
 const onEmergency = () => {
-  Linking.openURL(`tel:${7809348188}`)
+  Linking.openURL(`tel:${7806048907}`)
   let userId = 0;
   FirebaseProvider.getInstance().sendEmail(userId);
 
@@ -40,30 +40,18 @@ const setAddress = async (addressInfo) => {
   }
 }
 
-const onAddUser = async () => {
-  FirebaseProvider.getInstance().storeHouseholdInfo({
-    address: {
-      street: "123 Main St",
-      city: "Edmonton",
-      province: "Alberta",
-      postalCode: "TN73X5"
-    },
-    familyMembers: [
-      {
-        firstName: "Nayan",
-        lastName: "Prakash",
-        phn: "123456789",
-        hin: "555555555",
-        medicalConditions: ["Depression"]
-      }
-    ]
-  });
-  const address = `${householdInfo.street} ${householdInfo.city} ${householdInfo.province} ${householdInfo.postalCode}`;
-  householdInfo = await FirebaseProvider.getInstance().retrieveHouseholdInfo(address);
-  console.log(householdInfo);
+const onAddUser = async (navigation) => {
+  navigation.navigate('AddUserScreen', {onUserSave: saveUser});
+  const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
+  const familyMembers = [
+    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"], "dummyFaceId")
+  ];
+  const household = new Household(address, familyMembers);
+  await FirebaseProvider.getInstance().storeHousehold(household);
+  console.log(
+    await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
+  );
 }
-
-
 
 export default function App() {
   return (
@@ -77,7 +65,11 @@ export default function App() {
           name="AddressScreen"
           component={AddressScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
+          name="AddUserScreen"
+          component={AddUserScreen}
+        />
+        <Stack.Screen
           name="Camera"
           component={CameraScreen}
         />
@@ -86,7 +78,7 @@ export default function App() {
   );
 }
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const [detectedUser, setDetectedUser] = useState("");
 
   const onSetDetectedUser = (usr) => {
@@ -115,9 +107,9 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
 
-        <Text style={styles.detectedUser}>
-          Detected User: {detectedUser}
-        </Text>
+      <Text style={styles.detectedUser}>
+        Detected User: {detectedUser}
+      </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
         onPress={() => handleAddressButton(navigation)}
@@ -132,18 +124,18 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
 
-       <View style={styles.row}>
-       <TouchableOpacity
-        style={styles.userButton}
-        onPress={() =>
-          navigation.navigate('Camera', {
-            onSetDetectedUser: onSetDetectedUser,
-            subjectId: "TESTUSR!"
-          })
-        }
-       >
-        <Text style={styles.btnText}>Detect User</Text>
-       </TouchableOpacity>
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.userButton}
+          onPress={() =>
+            navigation.navigate('Camera', {
+              onSetDetectedUser: onSetDetectedUser,
+              subjectId: "TESTUSR!"
+            })
+          }
+        >
+          <Text style={styles.btnText}>Detect User</Text>
+        </TouchableOpacity>
 
         {
           householdId &&

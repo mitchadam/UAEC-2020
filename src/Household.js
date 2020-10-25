@@ -10,6 +10,10 @@ export class Address {
         this.province = province;
         this.postalCode = postalCode;
     }
+
+    toString() {
+        return `${this.street} ${this.city} ${this.province} ${this.postalCode}`;
+    }
 }
 
 export class FamilyMember {
@@ -18,13 +22,15 @@ export class FamilyMember {
     phn; // Personal health number.
     hin; // Health insurance number.
     medicalConditions;
+    faceId;
 
-    constructor(firstName, lastName, phn, hin, medicalConditions) {
+    constructor(firstName, lastName, phn, hin, medicalConditions, faceId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phn = phn;
         this.hin = hin;
         this.medicalConditions = medicalConditions;
+        this.faceId = faceId;
     }
 }
 
