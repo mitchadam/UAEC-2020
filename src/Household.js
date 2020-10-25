@@ -37,6 +37,10 @@ export class FamilyMember {
         this.faceId = faceId;
     }
 
+    toString() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
     static fromJson(json) {
         return new FamilyMember(json.firstName, json.lastName, json.phn, json.hin, json.medicalConditions, json.faceId);
     }
