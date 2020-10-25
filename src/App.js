@@ -12,10 +12,9 @@ import styles from './Styles';
 
 const Stack = createStackNavigator();
 
-const onEmergency = () => {
+const onEmergency = (userName) => {
   Linking.openURL(`tel:${7806048907}`)
-  let userId = 0;
-  FirebaseProvider.getInstance().sendEmail(userId);
+  FirebaseProvider.getInstance().sendEmail(userName);
 
   console.log("Hello!");
 }
@@ -173,7 +172,7 @@ const HomeScreen = ({navigation}) => {
 
       <TouchableOpacity
         style={styles.emergencyButton}
-        onPress={onEmergency}
+        onPress={() => onEmergency(detectedUser)}
       >
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
