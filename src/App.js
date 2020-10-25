@@ -6,6 +6,8 @@ import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 
 const onEmergency = () => {
 Linking.openURL(`tel:${7809348188}`)
+let userId = 0;
+FirebaseProvider.sendEmail(userId);
 
 console.log("Hello!");
 }
