@@ -33,7 +33,7 @@ const setAddress = async (addressInfo) => {
     );
     await AsyncStorage.setItem(
       'householdId',
-      new Household(address, null).toString()
+      JSON.stringify(address);
     )
   } catch (error) {
     console.log("Error saving householdId from PLS");
@@ -41,7 +41,24 @@ const setAddress = async (addressInfo) => {
 }
 
 const saveUser = async (userData) => {
-  console.log(userData);
+  try {
+    const addressJson = await AsyncStorage.getItem(
+      'householdId',
+    )
+    const address = Address.fromJson(JSON.parse(addressJson));
+    const familyMembers = [
+     new FamilyMember(userData.firstName,
+                      userData.lastName,
+                      userData.phn,
+                      userData.hin,
+                      userData.healthConditions,
+                      userData.firstName + " " + userData.lastName)
+    ];
+    const newHousehold = new Household(address, familyMembers);
+    FirebaseProvider.getInstance().storeHousehold(newHousehold);
+  } catch {
+    console.log("Error getting address when saving user.");
+  }
 }
 
 const onAddUser = (navigation) => {
