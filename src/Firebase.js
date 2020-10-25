@@ -71,4 +71,23 @@ export class FirebaseProvider {
             console.log("New high score: " + highscore);
         });
     }
+
+    sendEmail(userId) {
+        const mailRef = firebase.database().ref.child(`mail`);
+        // get new key
+        let newMailKey = firebase.database().ref().child('posts').push().key;
+
+        // populate data
+        let updates = {};
+        updates['/mail/' + newMailKey] = {
+            to: ["rpshukla@ualberta.ca"],
+            message: {
+                subject: "EMERGENCY",
+                text: "There has been an emergency.",
+            }
+        };
+
+        // send data
+        firebase.database().ref().update(updates);
+    }
 }

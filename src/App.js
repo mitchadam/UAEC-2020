@@ -9,6 +9,8 @@ const Stack = createStackNavigator();
 
 const onEmergency = () => {
 Linking.openURL(`tel:${7809348188}`)
+let userId = 0;
+FirebaseProvider.getInstance().sendEmail(userId);
 
 console.log("Hello!");
 }
