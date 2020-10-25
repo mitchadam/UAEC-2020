@@ -141,10 +141,10 @@ const HomeScreen = ({navigation}) => {
     <View style={styles.container}>
 
       <Text style={styles.detectedUser}>
-        Detected Household: {householdId}
+        Active Household: {householdId}
       </Text>
       <Text style={styles.detectedUser}>
-        Detected User: {detectedUser}
+        Active User: {detectedUser}
       </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
