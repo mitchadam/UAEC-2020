@@ -29,7 +29,6 @@ export class FirebaseProvider {
     return FirebaseProvider.instance;
   }
 
-
   async addTo(collection, data) {
     try {
       const docRef = await this.db.collection(collection).add(data);
@@ -39,11 +38,10 @@ export class FirebaseProvider {
     }
   }
 
-
-  async addTo(collection, doc, data) {
+  async addToDocument(collection, doc, data) {
     try {
       const docRef = await this.db.collection(collection).doc(doc).set(data);
-      console.log("Created document: " + doc);
+      console.log("Created document: " + docRef.id);
     } catch (error) {
       console.log(`Error adding document ${doc}: ${error}`);
     }
@@ -67,31 +65,28 @@ export class FirebaseProvider {
     const address = household.address.toString();
     let phn, hin, medicalConditions;
     for (const familyMember of household.familyMembers) {
-        if (familyMember.faceId === userId) {
-            phn = familyMember.phn;
-            hin = familyMember.hin;
-            medicalConditions = familyMember.medicalConditions;
-        }
+      if (familyMember.faceId === userId) {
+        phn = familyMember.phn;
+        hin = familyMember.hin;
+        medicalConditions = familyMember.medicalConditions;
+      }
     }
-    console.log("Here")
     // will automatically create id for the new document
     await this.addTo("mail", {
-      to: ["rpshukla@ualberta.ca"],
+      to: ["mli@ualberta.ca"],
       message: {
         subject: "EMERGENCY",
         text: "There has been an emergency.\n"
-              + "Name: " + userId + "\n"
-              + "Health Number: " + phn + "\n"
-              + "Insurance Number: " + hin + "\n"
-              + "Medical Conditions: " + medicalConditions + "\n"
-        ,
+          + "Name: " + userId + "\n"
+          + "Health Number: " + phn + "\n"
+          + "Insurance Number: " + hin + "\n"
+          + "Medical Conditions: " + medicalConditions + "\n"
       }
     });
-    console.log("now here")
   }
 
   async storeHousehold(household) {
-    await this.addTo("households", household.address.toString(), JSON.parse(JSON.stringify(household)));
+    await this.addToDocument("households", household.address.toString(), JSON.parse(JSON.stringify(household)));
   }
 
   async retrieveHousehold(address) {
