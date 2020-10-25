@@ -139,7 +139,7 @@ const HomeScreen = ({navigation}) => {
         </TouchableOpacity>
 
         {
-          householdId &&
+          !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
           >
@@ -148,7 +148,7 @@ const HomeScreen = ({navigation}) => {
         }
 
         {
-          householdId &&
+          !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
             onPress={onAddUser}
