@@ -76,18 +76,12 @@ export class FirebaseProvider {
 
     sendEmail(userId) {
         // will automatically create id for the new document
-        this.db.collection("mail").add({
+        this.addTo("mail", {
             to: ["rpshukla@ualberta.ca"],
             message: {
                 subject: "EMERGENCY",
                 text: "There has been an emergency.",
             }
-        })
-        .then(function(docRef) {
-            console.log("Email written to database with id: ", docRef.id);
-        })
-        .catch(function(error) {
-            console.error("Error writing email to database: ", error);
         });
     }
 }
