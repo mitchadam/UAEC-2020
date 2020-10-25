@@ -32,7 +32,7 @@ export class FirebaseProvider {
 
   async addTo(collection, data) {
     try {
-      docRef = await this.db.collection(collection).add(data);
+      const docRef = await this.db.collection(collection).add(data);
       console.log("Document written with ID: " + docRef.id);
     } catch (error) {
       console.log("Error adding document: " + error);
@@ -42,7 +42,7 @@ export class FirebaseProvider {
 
   async addTo(collection, doc, data) {
     try {
-      docRef = await this.db.collection(collection).doc(doc).set(data);
+      const docRef = await this.db.collection(collection).doc(doc).set(data);
       console.log("Created document: " + doc);
     } catch (error) {
       console.log(`Error adding document ${doc}: ${error}`);
@@ -73,6 +73,7 @@ export class FirebaseProvider {
             medicalConditions = familyMember.medicalConditions;
         }
     }
+    console.log("Here")
     // will automatically create id for the new document
     await this.addTo("mail", {
       to: ["rpshukla@ualberta.ca"],
@@ -86,6 +87,7 @@ export class FirebaseProvider {
         ,
       }
     });
+    console.log("now here")
   }
 
   async storeHousehold(household) {
