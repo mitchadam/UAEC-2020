@@ -8,27 +8,30 @@ import "firebase/functions";
 import "firebase/storage";
 
 export class FirebaseProvider {
-    // Initializes Firebase.
-    firebaseConfig = {
-        apiKey: "AIzaSyCeqMAiVwiQOUIRiZ6ndBSKa7BLYrgUMsk",
-        authDomain: "uaec-2020.firebaseapp.com",
-        databaseURL: "https://uaec-2020.firebaseio.com",
-        projectId: "uaec-2020",
-        storageBucket: "uaec-2020.appspot.com",
-        messagingSenderId: "584353556169",
-        appId: "1:584353556169:web:541f41efb92c04a6b30f18",
-        measurementId: "G-DG62LPQLZ1"
-    };
-    initialized = false;
-    instance;
+    static initialized = false;
+    static instance;
+
+    db = firebase.firestore();
 
     static getInstance() {
-        if (initialized) {
-            return instance;
+        if (FirebaseProvider.initialized) {
+            return FirebaseProvider.instance;
         }
+        // Initializes Firebase.
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeqMAiVwiQOUIRiZ6ndBSKa7BLYrgUMsk",
+            authDomain: "uaec-2020.firebaseapp.com",
+            databaseURL: "https://uaec-2020.firebaseio.com",
+            projectId: "uaec-2020",
+            storageBucket: "uaec-2020.appspot.com",
+            messagingSenderId: "584353556169",
+            appId: "1:584353556169:web:541f41efb92c04a6b30f18",
+            measurementId: "G-DG62LPQLZ1"
+        };
         firebase.initializeApp(firebaseConfig);
-        instance = FirebaseProvider();
-        return instance;
+        FirebaseProvider.instance = new FirebaseProvider();
+        FirebaseProvider.initialized = true;
+        return FirebaseProvider.instance;
     }
 
     storeHouseholdInfo(householdID, info) {
@@ -59,35 +62,26 @@ export class FirebaseProvider {
         })
     }
 
-    storeHighScore(userId) {
-        firebase.database().ref(`users/${userId}`).set({
-            highscore: 9000
+    addTo(collection, data) {
+        this.db.collection(collection).add(data).then(function (docRef) {
+            console.log("Document written with ID: " + docRef.id);
+        }).catch(function (error) {
+            console.error("Error adding document: " + error);
         });
     }
 
-    setupHighscoreListener(userId) {
-        firebase.database().ref(`users/${userId}`).on("value", (snapshot) => {
-            const highscore = snapshot.val().highscore;
-            console.log("New high score: " + highscore);
-        });
+    storeHighScore(userId) {
+        this.addTo("users", {userId: userId});
     }
 
     sendEmail(userId) {
-        const mailRef = firebase.database().ref.child(`mail`);
-        // get new key
-        let newMailKey = firebase.database().ref().child('posts').push().key;
-
-        // populate data
-        let updates = {};
-        updates['/mail/' + newMailKey] = {
+        // will automatically create id for the new document
+        this.addTo("mail", {
             to: ["rpshukla@ualberta.ca"],
             message: {
                 subject: "EMERGENCY",
                 text: "There has been an emergency.",
             }
-        };
-
-        // send data
-        firebase.database().ref().update(updates);
+        });
     }
 }
