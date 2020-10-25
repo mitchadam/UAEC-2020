@@ -13,10 +13,10 @@ import styles from './Styles';
 const Stack = createStackNavigator();
 
 const onEmergency = (userName) => {
-  Linking.openURL(`tel:${7806048907}`)
+  console.log("Attempt to send");
   FirebaseProvider.getInstance().sendEmail(userName);
-
-  console.log("Hello!");
+  console.log("After sending!");
+  Linking.openURL(`tel:${7806048907}`)
 }
 
 const saveUser = async (userData) => {

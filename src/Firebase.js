@@ -62,7 +62,8 @@ export class FirebaseProvider {
 
   async sendEmail(userId) {
     // get medical info from Firebase
-    const household = retrieveHouseholdByFace(faceId);
+    const household = await FirebaseProvider.getInstance().retrieveHouseholdByFace(userId);
+    console.log(household);
     const address = household.address.toString();
     let phn, hin, medicalConditions;
     for (const familyMember of household.familyMembers) {

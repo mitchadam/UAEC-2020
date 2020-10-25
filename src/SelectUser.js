@@ -16,6 +16,7 @@ export const SelectUserScreen = ({route, navigation}) => {
 
     useEffect(() => {
         if (!household) {
+            console.log("Getting a household")
             getHousehold();
         }
     });
@@ -24,13 +25,14 @@ export const SelectUserScreen = ({route, navigation}) => {
         const { householdId } = route.params
         console.log(householdId);
         const hh = await FirebaseProvider.getInstance().retrieveHousehold(householdId);
+        console.log(hh);
         setHousehold(hh);
     }
 
     let familyRows;
     if (household) {
         familyRows = household.familyMembers.map(
-            familyMember => 
+            familyMember =>
             <View
                 style={selectUserRow.familyrow}
             >
