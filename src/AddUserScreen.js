@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import {FirebaseProvider} from './Firebase';
+import { StackActions } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import styles from './Styles'
