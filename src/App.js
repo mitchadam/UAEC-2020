@@ -154,7 +154,7 @@ const HomeScreen = ({navigation}) => {
           !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
-            onPress={onAddUser}
+            onPress={() => onAddUser(navigation)}
           >
             <Text style={styles.btnText}>Add User</Text>
           </TouchableOpacity>
