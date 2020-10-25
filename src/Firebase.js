@@ -1,11 +1,6 @@
-import * as firebase from 'firebase';
-
-// Optionally import the services that you want to use
-import "firebase/auth";
-import "firebase/database";
+import firebase from 'firebase';
 import "firebase/firestore";
-import "firebase/functions";
-import "firebase/storage";
+import {Household} from './Household';
 
 export class FirebaseProvider {
   static initialized = false;
@@ -68,7 +63,7 @@ export class FirebaseProvider {
   async sendEmail(userId) {
     // will automatically create id for the new document
     await this.addTo("mail", {
-      to: ["rpshukla@ualberta.ca"],
+      to: ["mli@ualberta.ca"],
       message: {
         subject: "EMERGENCY",
         text: "There has been an emergency.",
@@ -81,22 +76,31 @@ export class FirebaseProvider {
   }
 
   async retrieveHousehold(address) {
-    const household = await this.getFrom("households", address);
-    const addressData = household.address;
-    const street = addressData.street;
-    const city = addressData.city;
-    const province = addressData.province;
-    const postalCode = addressData.postalCode
-    const familyMembers = household.familyMembers;
-    // iterates through each family member in a household
-    for (const familyMember of familyMembers) {
+    const householdData = await this.getFrom("households", address);
+    const household = Household.fromJson(householdData);
+    for (const familyMember of household.familyMembers) {
       const firstName = familyMember.firstName;
       const lastName = familyMember.lastName;
-      const phn = familyMember.phn;
-      const hin = familyMember.hin;
-      const medicalConditions = familyMember.medicalConditions;
-      console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${province} ${postalCode}`);
+      console.log(`${firstName} ${lastName} is living at: ${household.address.toString()}`);
     }
     return household;
+  }
+
+  async retrieveHouseholdByFace(faceId) {
+    const querySnapshot = await this.db.collection("households").get();
+    const households = [];
+    querySnapshot.forEach(doc => {
+      const household = Household.fromJson(doc.data());
+      for (const familyMember of household.familyMembers) {
+        if (familyMember.faceId === faceId) {
+          households.push(household);
+        }
+      }
+    });
+    if (households.length === 0) {
+      throw new Error(`No household with faceId ${faceId} found.`);
+    } else {
+      return households[0];
+    }
   }
 }

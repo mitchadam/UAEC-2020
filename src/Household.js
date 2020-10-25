@@ -14,6 +14,10 @@ export class Address {
     toString() {
         return `${this.street} ${this.city} ${this.province} ${this.postalCode}`;
     }
+
+    static fromJson(json) {
+        return new Address(json.street, json.city, json.province, json.postalCode);
+    }
 }
 
 export class FamilyMember {
@@ -32,6 +36,14 @@ export class FamilyMember {
         this.medicalConditions = medicalConditions;
         this.faceId = faceId;
     }
+
+    toString() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
+    static fromJson(json) {
+        return new FamilyMember(json.firstName, json.lastName, json.phn, json.hin, json.medicalConditions, json.faceId);
+    }
 }
 
 export class Household {
@@ -41,5 +53,11 @@ export class Household {
     constructor(address, familyMembers) {
         this.address = address;
         this.familyMembers = familyMembers;
+    }
+
+    static fromJson(json) {
+        const address = Address.fromJson(json.address);
+        const familyMembers = json.familyMembers.map(familyMemberJson => FamilyMember.fromJson(familyMemberJson));
+        return new Household(address, familyMembers);
     }
 }
