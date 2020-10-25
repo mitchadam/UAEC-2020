@@ -45,7 +45,7 @@ const saveUser = async (userData) => {
 }
 
 const onAddUser = (navigation) => {
-  await testFirebase();
+  testFirebase();
   navigation.navigate('AddUserScreen', {onSaveUser: saveUser});
 }
 
