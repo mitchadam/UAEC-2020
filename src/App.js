@@ -19,27 +19,6 @@ const onEmergency = (userName) => {
   console.log("Hello!");
 }
 
-const handleAddressButton = (navigation) => {
-  navigation.navigate('AddressScreen', {onAddressSave: setAddress});
-}
-
-const setAddress = async (addressInfo) => {
-  try {
-    const address = new Address(
-      addressInfo.street,
-      addressInfo.city,
-      addressCity.province,
-      addressCity.postalCode
-    );
-    await AsyncStorage.setItem(
-      'householdId',
-      JSON.stringify(address)
-    )
-  } catch (error) {
-    console.log("Error saving householdId from PLS");
-  }
-}
-
 const saveUser = async (userData) => {
   try {
     const addressJson = await AsyncStorage.getItem(
@@ -136,6 +115,7 @@ const HomeScreen = ({navigation}) => {
         hhId
       )
       setHouseholdId(hhId);
+      setDetectedUser(null);
     } catch (error) {
       console.log("Error saving householdId from PLS");
     }
@@ -160,6 +140,9 @@ const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
 
+      <Text style={styles.detectedUser}>
+        Detected Household: {householdId}
+      </Text>
       <Text style={styles.detectedUser}>
         Detected User: {detectedUser}
       </Text>
