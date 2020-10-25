@@ -85,4 +85,22 @@ export class FirebaseProvider {
     }
     return household;
   }
+
+  async retrieveHouseholdByFace(faceId) {
+    const querySnapshot = await this.db.collection("households").get();
+    const households = [];
+    querySnapshot.forEach(doc => {
+      const household = Household.fromJson(doc.data());
+      for (const familyMember of household.familyMembers) {
+        if (familyMember.faceId === faceId) {
+          households.push(household);
+        }
+      }
+    });
+    if (households.length === 0) {
+      throw new Error(`No household with faceId ${faceId} found.`);
+    } else {
+      return households[0];
+    }
+  }
 }

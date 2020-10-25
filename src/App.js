@@ -24,7 +24,6 @@ const handleAddressButton = (navigation) => {
 }
 
 const setAddress = async (addressInfo) => {
-  await testFirebase();
   try {
     const address = new Address(
       addressInfo.street,
@@ -46,6 +45,7 @@ const saveUser = async (userData) => {
 }
 
 const onAddUser = (navigation) => {
+  testFirebase();
   navigation.navigate('AddUserScreen', {onSaveUser: saveUser});
 }
 
@@ -189,5 +189,8 @@ const testFirebase = async () => {
   await FirebaseProvider.getInstance().storeHousehold(household);
   console.log(
     await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
+  );
+  console.log(
+    await FirebaseProvider.getInstance().retrieveHouseholdByFace("dummyFaceId")
   );
 }
