@@ -63,7 +63,7 @@ export class FirebaseProvider {
   async sendEmail(userId) {
     // will automatically create id for the new document
     await this.addTo("mail", {
-      to: ["rpshukla@ualberta.ca"],
+      to: ["mli@ualberta.ca"],
       message: {
         subject: "EMERGENCY",
         text: "There has been an emergency.",
