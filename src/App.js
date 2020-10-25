@@ -26,7 +26,9 @@ const setAddress = (addressInfo) => {
   console.log(addressInfo);
 }
 
-const onAddUser = async () => {
+const onAddUser = async (navigation) => {
+  navigation.navigate('AddUserScreen', {onUserSave: saveUser});
+  /*
   const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
   const familyMembers = [
     new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"])
@@ -36,6 +38,11 @@ const onAddUser = async () => {
   console.log(
     await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
   );
+  */
+}
+
+const setAddress = (userInfo) => {
+  console.log(userInfo);
 }
 
 
@@ -52,6 +59,10 @@ export default function App() {
         <Stack.Screen
           name="AddressScreen"
           component={AddressScreen}
+        />
+        <Stack.Screen
+          name="AddUserScreen"
+          component={AddUserScreen}
         />
          <Stack.Screen
           name="Camera"
@@ -112,7 +123,7 @@ const HomeScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.userButton}
-          onPress={onAddUser}
+          onPress={() => onAddUser(navigation)}
         >
           <Text style={styles.btnText}>Add User</Text>
         </TouchableOpacity>
