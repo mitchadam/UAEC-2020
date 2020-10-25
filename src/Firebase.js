@@ -31,6 +31,34 @@ export class FirebaseProvider {
         return instance;
     }
 
+    storeHouseholdInfo(householdID, info) {
+        firebase.database.ref(`households/${householdID}`).set(
+            info
+        );
+    }
+
+    setupHouseholdInfoListener(householdId) {
+        firebase.database().ref(`users/${householdId}`).on("value", (snapshot) => {
+            const addressData = snapshot.val().address;
+
+            const street = addressData.street;
+            const city = addressData.city;
+            const prov = addressData.prov;
+            const postalCode = addressData.postalCode
+
+            const familyMembers = snapshot.val().familyMembers;
+            // iterates through each family member in a household
+            for (i = 0; i < familyMembers.length; i++) {
+                const firstName = familyMembers[i].firstName;
+                const lastName = familyMembers[i].lastName;
+                const PHN = familyMembers[i].PHN;
+                const HIN = familyMembers[i].HIN;
+                const medicalConditions = familyMembers[i].medicalConditions;
+                console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${postalCode}`);
+            }
+        })
+    }
+
     storeHighScore(userId) {
         firebase.database().ref(`users/${userId}`).set({
             highscore: 9000
