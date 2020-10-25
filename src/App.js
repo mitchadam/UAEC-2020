@@ -1,13 +1,13 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import {Linking} from 'react-native'
 import { AddressScreen } from './AddressScreen'
-import { Permissions, Camera, FaceDetector, } from 'expo';
+import { AsyncStorage } from 'react-native';
 import CameraScreen from "./CameraScreen";
 import styles from './Styles'
+import { Household, Address } from './Household'
 
 const Stack = createStackNavigator();
 
@@ -23,8 +23,21 @@ const handleAddressButton = (navigation) => {
   navigation.navigate('AddressScreen', {onAddressSave: setAddress});
 }
 
-const setAddress = (addressInfo) => {
-  console.log(addressInfo);
+const setAddress = async (addressInfo) => {
+  try {
+    const address = new Address(
+      addressInfo.street,
+      addressInfo.city,
+      addressCity.province,
+      addressCity.postalCode
+    );
+    await AsyncStorage.setItem(
+      'householdId',
+      new Household(address, null).toString()
+    )
+  } catch (error) {
+    console.log("Error saving householdId from PLS");
+  }
 }
 
 const onAddUser = async () => {
@@ -53,7 +66,6 @@ const onAddUser = async () => {
 
 
 export default function App() {
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -82,6 +94,23 @@ const HomeScreen = ({ navigation }) => {
     setDetectedUser(usr);
   }
 
+  const [householdId, setHouseholdId] = useState('');
+
+  useEffect(() => {
+    if (!householdId) {
+      getHouseholdId();
+    }
+  });
+
+  const getHouseholdId = async () => {
+    let hhId = null;
+    try {
+      hhId = await AsyncStorage.getItem('householdId');
+      setHouseholdId(hhId)
+    } catch (error) {
+      console.log("Error getting householdId from PLS");
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -116,18 +145,24 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.btnText}>Detect User</Text>
        </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.userButton}
-        >
-          <Text style={styles.btnText}>Select User</Text>
-        </TouchableOpacity>
+        {
+          householdId &&
+          <TouchableOpacity
+            style={styles.userButton}
+          >
+            <Text style={styles.btnText}>Select User</Text>
+          </TouchableOpacity>
+        }
 
-        <TouchableOpacity
-          style={styles.userButton}
-          onPress={onAddUser}
-        >
-          <Text style={styles.btnText}>Add User</Text>
-        </TouchableOpacity>
+        {
+          householdId &&
+          <TouchableOpacity
+            style={styles.userButton}
+            onPress={onAddUser}
+          >
+            <Text style={styles.btnText}>Add User</Text>
+          </TouchableOpacity>
+        }
 
       </View>
     </View>
