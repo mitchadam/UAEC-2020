@@ -114,44 +114,52 @@ const CameraScreen = ({ route, navigation }) => {
 
   return (
     <>
-    <Camera
-      ref={cameraRef}
-      style={{
-        flex: 1,
-      }}
-      type='front'
-      onFacesDetected={faceDetected}
-      FaceDetectorSettings={{
-        mode: FaceDetector.Constants.Mode.fast,
-        detectLandmarks: FaceDetector.Constants.Landmarks.all,
-        runClassifications: FaceDetector.Constants.Classifications.none,
-        minDetectionInterval: 5000,
-        tracking: false
-      }}
-    >
-      {/* <View style={styles.container}> */}
+      <Camera
+        ref={cameraRef}
+        style={{
+          flex: 1,
+        }}
+        type='front'
+        onFacesDetected={faceDetected}
+        FaceDetectorSettings={{
+          mode: FaceDetector.Constants.Mode.fast,
+          detectLandmarks: FaceDetector.Constants.Landmarks.all,
+          runClassifications: FaceDetector.Constants.Classifications.none,
+          minDetectionInterval: 5000,
+          tracking: false
+        }}
+      >
+        {/* <View style={styles.container}> */}
 
-      {/* </View> */}
+        {/* </View> */}
       </Camera>
       <View style={styles.container}>
-     <TouchableOpacity
-         style={styles.userButton}
-     onPress={() => snap(false)}>
-     <Text
-       style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-       {' '}Enroll{' '}
-     </Text>
-   </TouchableOpacity>
-   <TouchableOpacity
-     style={styles.userButton}
-     onPress={() => snap(true)}>
-     <Text
-       style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
-       {' '}Recognize{' '}
-     </Text>
-   </TouchableOpacity>
-   </View>
-   </>
+        {
+          !!subjectId &&
+
+          <TouchableOpacity
+            style={styles.userButton}
+            onPress={() => snap(false)}>
+            <Text
+              style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
+              {' '}Enroll{' '}
+            </Text>
+          </TouchableOpacity>
+        }
+        {
+          !subjectId &&
+          <TouchableOpacity
+            style={styles.userButton}
+            onPress={() => snap(true)}>
+            <Text
+              style={{ fontSize: 18, marginBottom: 10, color: 'white' }}>
+              {' '}Recognize{' '}
+            </Text>
+          </TouchableOpacity>
+        }
+
+      </View>
+    </>
   );
 }
 
@@ -178,7 +186,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4.65,
 
     elevation: 7,
-}
+  }
 });
 
 export default CameraScreen;

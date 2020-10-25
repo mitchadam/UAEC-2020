@@ -88,7 +88,7 @@ const HomeScreen = ({navigation}) => {
   const handleAddressButton = (navigation) => {
     navigation.navigate('AddressScreen', {onAddressSave: setAddress});
   }
-  
+
   const setAddress = async (addressInfo) => {
     try {
       const address = new Address(
@@ -150,7 +150,6 @@ const HomeScreen = ({navigation}) => {
           onPress={() =>
             navigation.navigate('Camera', {
               onSetDetectedUser: onSetDetectedUser,
-              subjectId: "TESTUSR!"
             })
           }
         >
