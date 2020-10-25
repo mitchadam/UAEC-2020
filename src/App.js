@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import { SelectUserScreen } from './SelectUser'
+import {SelectUserScreen} from './SelectUser'
 import React, {useEffect, useState} from 'react';
 import {AsyncStorage, Linking, Text, TouchableOpacity, View} from 'react-native';
 import {AddressScreen} from './AddressScreen';
@@ -34,7 +34,7 @@ const setAddress = async (addressInfo) => {
     );
     await AsyncStorage.setItem(
       'householdId',
-      JSON.stringify(address);
+      JSON.stringify(address)
     )
   } catch (error) {
     console.log("Error saving householdId from PLS");
@@ -48,12 +48,14 @@ const saveUser = async (userData) => {
     )
     const address = Address.fromJson(JSON.parse(addressJson));
     const familyMembers = [
-     new FamilyMember(userData.firstName,
-                      userData.lastName,
-                      userData.phn,
-                      userData.hin,
-                      userData.healthConditions,
-                      userData.firstName + " " + userData.lastName)
+      new FamilyMember(
+        userData.firstName,
+        userData.lastName,
+        userData.phn,
+        userData.hin,
+        userData.healthConditions,
+        userData.firstName + " " + userData.lastName
+      )
     ];
     const newHousehold = new Household(address, familyMembers);
     FirebaseProvider.getInstance().storeHousehold(newHousehold);
