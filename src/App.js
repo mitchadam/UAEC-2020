@@ -1,15 +1,13 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import {Linking} from 'react-native'
-import { AddressScreen } from './AddressScreen'
-import { AsyncStorage } from 'react-native';
-import CameraScreen from "./CameraScreen";
+import React, {useEffect, useState} from 'react';
+import {AsyncStorage, Linking, Text, TouchableOpacity, View} from 'react-native';
+import {AddressScreen} from './AddressScreen';
 import AddUserScreen from "./AddUserScreen";
-import styles from './Styles'
-import { FamilyMember, Household, Address } from './Household';
-import { FirebaseProvider } from './Firebase';
+import CameraScreen from "./CameraScreen";
+import {FirebaseProvider} from './Firebase';
+import {Address, FamilyMember, Household} from './Household';
+import styles from './Styles';
 
 const Stack = createStackNavigator();
 
@@ -21,17 +19,30 @@ const onEmergency = () => {
   console.log("Hello!");
 }
 
+const handleAddressButton = (navigation) => {
+  navigation.navigate('AddressScreen', {onAddressSave: setAddress});
+}
+
+const setAddress = async (addressInfo) => {
+  await testFirebase();
+  try {
+    const address = new Address(
+      addressInfo.street,
+      addressInfo.city,
+      addressCity.province,
+      addressCity.postalCode
+    );
+    await AsyncStorage.setItem(
+      'householdId',
+      new Household(address, null).toString()
+    )
+  } catch (error) {
+    console.log("Error saving householdId from PLS");
+  }
+}
+
 const onAddUser = async (navigation) => {
   navigation.navigate('AddUserScreen', {onUserSave: saveUser});
-  const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
-  const familyMembers = [
-    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"], "dummyFaceId")
-  ];
-  const household = new Household(address, familyMembers);
-  await FirebaseProvider.getInstance().storeHousehold(household);
-  console.log(
-    await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
-  );
 }
 
 const saveUser = async (userData) => {
@@ -165,5 +176,17 @@ const HomeScreen = ({navigation}) => {
 
       </View>
     </View>
+  );
+}
+
+const testFirebase = async () => {
+  const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
+  const familyMembers = [
+    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"], "dummyFaceId")
+  ];
+  const household = new Household(address, familyMembers);
+  await FirebaseProvider.getInstance().storeHousehold(household);
+  console.log(
+    await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
   );
 }
