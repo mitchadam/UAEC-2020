@@ -13,6 +13,7 @@ import styles from './Styles';
 const Stack = createStackNavigator();
 
 const onEmergency = (userName) => {
+  console.log(userName)
   console.log("Attempt to send");
   FirebaseProvider.getInstance().sendEmail(userName);
   console.log("After sending!");
