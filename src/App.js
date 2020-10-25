@@ -1,11 +1,12 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import React from 'react';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import {Linking} from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { AddressScreen } from './AddressScreen'
+import { Permissions, Camera, FaceDetector, } from 'expo';
+import CameraScreen from "./CameraScreen";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ const onAddUser = () => {
 }
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -37,9 +39,13 @@ export default function App() {
           name="Home"
           component={HomeScreen}
         />
-        <Stack.Screen 
+        <Stack.Screen
           name="AddressScreen"
           component={AddressScreen}
+        />
+         <Stack.Screen
+          name="Camera"
+          component={CameraScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -47,9 +53,15 @@ export default function App() {
 }
 
 const HomeScreen = ({ navigation }) => {
+  const [detectedUser, setDetectedUser] = useState("");
+
+
   return (
     <View style={styles.container}>
 
+        <Text style={styles.detectedUser}>
+          Detected User: {detectedUser}
+        </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
         onPress={() => handleAddressButton(navigation)}
@@ -67,8 +79,11 @@ const HomeScreen = ({ navigation }) => {
        <View style={styles.row}>
        <TouchableOpacity
         style={styles.userButton}
+        onPress={() =>
+          navigation.navigate('Camera', { setDetectedUser: (usr) => setDetectedUser(usr) })
+        }
        >
-        <Text style={styles.btnText}>Select User</Text>
+        <Text style={styles.btnText}>Detect User</Text>
        </TouchableOpacity>
 
        <TouchableOpacity
@@ -148,8 +163,12 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     color: '#fff'
   },
-btnTextLrg: {
-  fontSize: 30,
-  color: '#fff'
-}
+  btnTextLrg: {
+    fontSize: 30,
+    color: '#fff'
+  },
+  detectedUser: {
+    fontSize: 20,
+    color: "#515251"
+  }
 });
