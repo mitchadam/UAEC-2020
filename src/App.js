@@ -10,11 +10,11 @@ import { AddressScreen } from './AddressScreen'
 const Stack = createStackNavigator();
 
 const onEmergency = () => {
-Linking.openURL(`tel:${7809348188}`)
-let userId = 0;
-FirebaseProvider.getInstance().sendEmail(userId);
+  Linking.openURL(`tel:${7809348188}`)
+  let userId = 0;
+  FirebaseProvider.getInstance().sendEmail(userId);
 
-console.log("Hello!");
+  console.log("Hello!");
 }
 
 const handleAddressButton = (navigation) => {
@@ -25,8 +25,27 @@ const setAddress = (addressInfo) => {
   console.log(addressInfo.street);
 }
 
-const onAddUser = () => {
-  FirebaseProvider.getInstance().storeHighScore("nayan");
+const onAddUser = async () => {
+  FirebaseProvider.getInstance().storeHouseholdInfo({
+    address: {
+      street: "123 Main St",
+      city: "Edmonton",
+      province: "Alberta",
+      postalCode: "TN73X5"
+    },
+    familyMembers: [
+      {
+        firstName: "Nayan",
+        lastName: "Prakash",
+        phn: "123456789",
+        hin: "555555555",
+        medicalConditions: ["Depression"]
+      }
+    ]
+  });
+  const address = `${householdInfo.street} ${householdInfo.city} ${householdInfo.province} ${householdInfo.postalCode}`;
+  householdInfo = await FirebaseProvider.getInstance().retrieveHouseholdInfo(address);
+  console.log(householdInfo);
 }
 
 export default function App() {
@@ -46,7 +65,7 @@ export default function App() {
   );
 }
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
 
@@ -58,27 +77,27 @@ const HomeScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-          style={styles.emergencyButton}
-          onPress={onEmergency}
+        style={styles.emergencyButton}
+        onPress={onEmergency}
       >
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
 
-       <View style={styles.row}>
-       <TouchableOpacity
-        style={styles.userButton}
-       >
-        <Text style={styles.btnText}>Select User</Text>
-       </TouchableOpacity>
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.userButton}
+        >
+          <Text style={styles.btnText}>Select User</Text>
+        </TouchableOpacity>
 
-       <TouchableOpacity
-        style={styles.userButton}
-        onPress={onAddUser}
-       >
-        <Text style={styles.btnText}>Add User</Text>
-       </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.userButton}
+          onPress={onAddUser}
+        >
+          <Text style={styles.btnText}>Add User</Text>
+        </TouchableOpacity>
 
-       </View>
+      </View>
 
     </View>
   );
@@ -100,8 +119,8 @@ export const styles = StyleSheet.create({
     borderRadius: 15,
     shadowColor: "#000",
     shadowOffset: {
-    	width: 0,
-    	height: 3,
+      width: 0,
+      height: 3,
     },
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
@@ -113,20 +132,20 @@ export const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   userButton: {
-      backgroundColor: '#4183e0',
-      width: '30%',
-      alignItems: 'center',
-      padding: 10,
-      borderRadius: 15,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowOpacity: 0.29,
-      shadowRadius: 4.65,
+    backgroundColor: '#4183e0',
+    width: '30%',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
 
-      elevation: 7,
+    elevation: 7,
   },
   setAddressButton: {
     backgroundColor: '#4183e0',
@@ -148,8 +167,8 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     color: '#fff'
   },
-btnTextLrg: {
-  fontSize: 30,
-  color: '#fff'
-}
+  btnTextLrg: {
+    fontSize: 30,
+    color: '#fff'
+  }
 });

@@ -8,80 +8,99 @@ import "firebase/functions";
 import "firebase/storage";
 
 export class FirebaseProvider {
-    static initialized = false;
-    static instance;
+  static initialized = false;
+  static instance;
 
-    db = firebase.firestore();
+  db = firebase.firestore();
 
-    static getInstance() {
-        if (FirebaseProvider.initialized) {
-            return FirebaseProvider.instance;
-        }
-        // Initializes Firebase.
-        const firebaseConfig = {
-            apiKey: "AIzaSyCeqMAiVwiQOUIRiZ6ndBSKa7BLYrgUMsk",
-            authDomain: "uaec-2020.firebaseapp.com",
-            databaseURL: "https://uaec-2020.firebaseio.com",
-            projectId: "uaec-2020",
-            storageBucket: "uaec-2020.appspot.com",
-            messagingSenderId: "584353556169",
-            appId: "1:584353556169:web:541f41efb92c04a6b30f18",
-            measurementId: "G-DG62LPQLZ1"
-        };
-        firebase.initializeApp(firebaseConfig);
-        FirebaseProvider.instance = new FirebaseProvider();
-        FirebaseProvider.initialized = true;
-        return FirebaseProvider.instance;
+  static getInstance() {
+    if (FirebaseProvider.initialized) {
+      return FirebaseProvider.instance;
     }
+    // Initializes Firebase.
+    const firebaseConfig = {
+      apiKey: "AIzaSyCeqMAiVwiQOUIRiZ6ndBSKa7BLYrgUMsk",
+      authDomain: "uaec-2020.firebaseapp.com",
+      databaseURL: "https://uaec-2020.firebaseio.com",
+      projectId: "uaec-2020",
+      storageBucket: "uaec-2020.appspot.com",
+      messagingSenderId: "584353556169",
+      appId: "1:584353556169:web:541f41efb92c04a6b30f18",
+      measurementId: "G-DG62LPQLZ1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    FirebaseProvider.instance = new FirebaseProvider();
+    FirebaseProvider.initialized = true;
+    return FirebaseProvider.instance;
+  }
 
-    storeHouseholdInfo(householdID, info) {
-        firebase.database.ref(`households/${householdID}`).set(
-            info
-        );
+
+  async addTo(collection, data) {
+    try {
+      docRef = await this.db.collection(collection).add(data);
+      console.log("Document written with ID: " + docRef.id);
+    } catch (error) {
+      console.log("Error adding document: " + error);
     }
+  }
 
-    setupHouseholdInfoListener(householdId) {
-        firebase.database().ref(`users/${householdId}`).on("value", (snapshot) => {
-            const addressData = snapshot.val().address;
 
-            const street = addressData.street;
-            const city = addressData.city;
-            const prov = addressData.prov;
-            const postalCode = addressData.postalCode
-
-            const familyMembers = snapshot.val().familyMembers;
-            // iterates through each family member in a household
-            for (i = 0; i < familyMembers.length; i++) {
-                const firstName = familyMembers[i].firstName;
-                const lastName = familyMembers[i].lastName;
-                const PHN = familyMembers[i].PHN;
-                const HIN = familyMembers[i].HIN;
-                const medicalConditions = familyMembers[i].medicalConditions;
-                console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${postalCode}`);
-            }
-        })
+  async addTo(collection, doc, data) {
+    try {
+      docRef = await this.db.collection(collection).doc(doc).set(data);
+      console.log("Created document: " + doc);
+    } catch (error) {
+      console.log(`Error adding document ${doc}: ${error}`);
     }
+  }
 
-    addTo(collection, data) {
-        this.db.collection(collection).add(data).then(function (docRef) {
-            console.log("Document written with ID: " + docRef.id);
-        }).catch(function (error) {
-            console.error("Error adding document: " + error);
-        });
+  async getFrom(collection, doc) {
+    try {
+      const querySnapshot = await db.collection(collection).doc(doc).get();
+      querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+      });
+      return querySnapshot;
+    } catch (error) {
+      console.log("Error getting document: " + error);
     }
+  }
 
-    storeHighScore(userId) {
-        this.addTo("users", {userId: userId});
-    }
+  async sendEmail(userId) {
+    // will automatically create id for the new document
+    await this.addTo("mail", {
+      to: ["rpshukla@ualberta.ca"],
+      message: {
+        subject: "EMERGENCY",
+        text: "There has been an emergency.",
+      }
+    });
+  }
 
-    sendEmail(userId) {
-        // will automatically create id for the new document
-        this.addTo("mail", {
-            to: ["rpshukla@ualberta.ca"],
-            message: {
-                subject: "EMERGENCY",
-                text: "There has been an emergency.",
-            }
-        });
+  async storeHouseholdInfo(householdInfo) {
+    const address = householdInfo.address;
+    const addressString = `${address.street} ${address.city} ${address.province} ${address.postalCode}`;
+    await this.addTo("households", addressString, householdInfo);
+  }
+
+  async retrieveHouseholdInfo(address) {
+    const querySnapshot = await this.getFrom("households", address);
+    const householdInfo = querySnapshot.val();
+    const addressData = householdInfo.address;
+    const street = addressData.street;
+    const city = addressData.city;
+    const province = addressData.province;
+    const postalCode = addressData.postalCode
+    const familyMembers = householdInfo.familyMembers;
+    // iterates through each family member in a household
+    for (const familyMember of familyMembers) {
+      const firstName = familyMember.firstName;
+      const lastName = familyMember.lastName;
+      const phn = familyMember.phn;
+      const hin = familyMember.hin;
+      const medicalConditions = familyMember.medicalConditions;
+      console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${province} ${postalCode}`);
     }
+    return householdInfo;
+  }
 }
