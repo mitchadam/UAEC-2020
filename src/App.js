@@ -41,11 +41,6 @@ const onAddUser = async (navigation) => {
   */
 }
 
-const setAddress = (userInfo) => {
-  console.log(userInfo);
-}
-
-
 
 export default function App() {
 
