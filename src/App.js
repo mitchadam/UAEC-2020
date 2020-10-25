@@ -28,27 +28,22 @@ const setAddress = (addressInfo) => {
 
 const onAddUser = async (navigation) => {
   navigation.navigate('AddUserScreen', {onUserSave: saveUser});
-  /*
   const address = new Address("123 Main St", "Edmonton", "Alberta", "TN73X5");
   const familyMembers = [
-    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"])
+    new FamilyMember("Nayan", "Prakash", "123456789", "555555555", ["Influenza"], "dummyFaceId")
   ];
   const household = new Household(address, familyMembers);
   await FirebaseProvider.getInstance().storeHousehold(household);
   console.log(
     await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
   );
-  */
 }
 
 const setAddress = (userInfo) => {
   console.log(userInfo);
 }
 
-
-
 export default function App() {
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -64,7 +59,7 @@ export default function App() {
           name="AddUserScreen"
           component={AddUserScreen}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Camera"
           component={CameraScreen}
         />
@@ -73,7 +68,7 @@ export default function App() {
   );
 }
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const [detectedUser, setDetectedUser] = useState("");
 
   const onSetDetectedUser = (usr) => {
@@ -81,13 +76,12 @@ const HomeScreen = ({ navigation }) => {
     setDetectedUser(usr);
   }
 
-
   return (
     <View style={styles.container}>
 
-        <Text style={styles.detectedUser}>
-          Detected User: {detectedUser}
-        </Text>
+      <Text style={styles.detectedUser}>
+        Detected User: {detectedUser}
+      </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
         onPress={() => handleAddressButton(navigation)}
@@ -102,18 +96,18 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
 
-       <View style={styles.row}>
-       <TouchableOpacity
-        style={styles.userButton}
-        onPress={() =>
-          navigation.navigate('Camera', {
-            onSetDetectedUser: onSetDetectedUser,
-            subjectId: "TESTUSR!"
-          })
-        }
-       >
-        <Text style={styles.btnText}>Detect User</Text>
-       </TouchableOpacity>
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={styles.userButton}
+          onPress={() =>
+            navigation.navigate('Camera', {
+              onSetDetectedUser: onSetDetectedUser,
+              subjectId: "TESTUSR!"
+            })
+          }
+        >
+          <Text style={styles.btnText}>Detect User</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.userButton}
