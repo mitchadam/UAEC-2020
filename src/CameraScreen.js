@@ -85,7 +85,7 @@ const recognize = async (base64) => {
               if (response.images) {
                 onSetDetectedUser(response.images[0].transaction.subject_id);
               } else {
-                onSetDetectedUser("Not recognized");
+                onSetDetectedUser(null);
               }
               navigation.navigate('Home');
 
@@ -98,6 +98,9 @@ const recognize = async (base64) => {
               } else {
                 console.log("Enroll failed")
               }
+
+              navigation.navigate('Home');
+
             }
         }
     } catch (e) {
