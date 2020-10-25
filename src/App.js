@@ -41,11 +41,12 @@ const setAddress = async (addressInfo) => {
   }
 }
 
-const onAddUser = async (navigation) => {
-  navigation.navigate('AddUserScreen', {onUserSave: saveUser});
+const saveUser = async (userData) => {
+  console.log(userData);
 }
 
-const saveUser = async (userData) => {
+const onAddUser = (navigation) => {
+  navigation.navigate('AddUserScreen', {onSaveUser: saveUser});
 }
 
 export default function App() {

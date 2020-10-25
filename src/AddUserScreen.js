@@ -10,6 +10,7 @@ export default function AddUserScreen({route, navigation}) {
     const [lastNameText, setLastNameText] = useState();
     const [phnText, setPhnText] = useState();
     const [hinText, setHinText] = useState();
+    const [healthConditionsText, setHealthConditionsText] = useState();
 
     const handleSaveUser = () => {
         const {onSaveUser} = route.params;
@@ -17,15 +18,17 @@ export default function AddUserScreen({route, navigation}) {
             firstNameText !== undefined &&
             lastNameText !== undefined &&
             phnText !== undefined &&
-            hinText !== undefined
+            hinText !== undefined &&
+            healthConditionsText !== undefined
         ) {
-            const addressInfo = {
-                street: streetText,
-                city: cityText,
-                province: provText,
-                postalCode: postalText
+            const userInfo = {
+                firstName: firstNameText,
+                lastName: lastNameText,
+                phn: phnText,
+                hin: hinText,
+                healthConditions: healthConditionsText,
             }
-            onSaveUser(addressInfo);
+            onSaveUser(userInfo);
             const popAction = StackActions.pop(1);
             navigation.dispatch(popAction);
         }
@@ -79,6 +82,18 @@ export default function AddUserScreen({route, navigation}) {
                     placholder="Health Insurance Number"
                     onChangeText={text => setHinText(text)}
                     defaultValue={hinText}
+                />
+            </View>
+            <View style={addressStyles.row}>
+                <Text style={styles.regularText}>Health Conditions</Text>
+                <TextInput
+                    height='40%'
+                    width='65%'
+                    selectionColor='#4183e0'
+                    underlineColorAndroid='#4183e0'
+                    placholder="Health Conditions"
+                    onChangeText={text => setHealthConditionsText(text)}
+                    defaultValue={healthConditionsText}
                 />
             </View>
             <TouchableOpacity
