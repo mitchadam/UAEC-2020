@@ -1,11 +1,6 @@
-import * as firebase from 'firebase';
-
-// Optionally import the services that you want to use
-import "firebase/auth";
-import "firebase/database";
+import firebase from 'firebase';
 import "firebase/firestore";
-import "firebase/functions";
-import "firebase/storage";
+import {Household} from './Household';
 
 export class FirebaseProvider {
   static initialized = false;
@@ -81,21 +76,12 @@ export class FirebaseProvider {
   }
 
   async retrieveHousehold(address) {
-    const household = await this.getFrom("households", address);
-    const addressData = household.address;
-    const street = addressData.street;
-    const city = addressData.city;
-    const province = addressData.province;
-    const postalCode = addressData.postalCode
-    const familyMembers = household.familyMembers;
-    // iterates through each family member in a household
-    for (const familyMember of familyMembers) {
+    const householdData = await this.getFrom("households", address);
+    const household = Household.fromJson(householdData);
+    for (const familyMember of household.familyMembers) {
       const firstName = familyMember.firstName;
       const lastName = familyMember.lastName;
-      const phn = familyMember.phn;
-      const hin = familyMember.hin;
-      const medicalConditions = familyMember.medicalConditions;
-      console.log(`${firstName} ${lastName} is living at: ${street} ${city} ${province} ${postalCode}`);
+      console.log(`${firstName} ${lastName} is living at: ${household.address.toString()}`);
     }
     return household;
   }
