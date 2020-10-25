@@ -12,33 +12,11 @@ import styles from './Styles';
 
 const Stack = createStackNavigator();
 
-const onEmergency = () => {
+const onEmergency = (userName) => {
   Linking.openURL(`tel:${7806048907}`)
-  let userId = 0;
-  FirebaseProvider.getInstance().sendEmail(userId);
+  FirebaseProvider.getInstance().sendEmail(userName);
 
   console.log("Hello!");
-}
-
-const handleAddressButton = (navigation) => {
-  navigation.navigate('AddressScreen', {onAddressSave: setAddress});
-}
-
-const setAddress = async (addressInfo) => {
-  try {
-    const address = new Address(
-      addressInfo.street,
-      addressInfo.city,
-      addressCity.province,
-      addressCity.postalCode
-    );
-    await AsyncStorage.setItem(
-      'householdId',
-      JSON.stringify(address)
-    )
-  } catch (error) {
-    console.log("Error saving householdId from PLS");
-  }
 }
 
 const saveUser = async (userData) => {
@@ -101,12 +79,6 @@ export default function App() {
 const HomeScreen = ({navigation}) => {
 
   const [detectedUser, setDetectedUser] = useState("");
-
-  const onSetDetectedUser = (usr) => {
-    console.log(usr);
-    setDetectedUser(usr);
-  }
-
   const [householdId, setHouseholdId] = useState('');
 
   const handleSelectUserButton = () => {
@@ -119,6 +91,7 @@ const HomeScreen = ({navigation}) => {
         'userId',
         uId
       );
+      setDetectedUser(uId);
     } catch (error) {
       console.log("Error setting user from PLS");
     }
@@ -142,6 +115,7 @@ const HomeScreen = ({navigation}) => {
         hhId
       )
       setHouseholdId(hhId);
+      setDetectedUser(null);
     } catch (error) {
       console.log("Error saving householdId from PLS");
     }
@@ -167,7 +141,10 @@ const HomeScreen = ({navigation}) => {
     <View style={styles.container}>
 
       <Text style={styles.detectedUser}>
-        Detected User: {detectedUser}
+        Active Household: {householdId}
+      </Text>
+      <Text style={styles.detectedUser}>
+        Active User: {detectedUser}
       </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
@@ -178,7 +155,7 @@ const HomeScreen = ({navigation}) => {
 
       <TouchableOpacity
         style={styles.emergencyButton}
-        onPress={onEmergency}
+        onPress={() => onEmergency(detectedUser)}
       >
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
@@ -188,7 +165,7 @@ const HomeScreen = ({navigation}) => {
           style={styles.userButton}
           onPress={() =>
             navigation.navigate('Camera', {
-              onSetDetectedUser: onSetDetectedUser,
+              onSetDetectedUser: setUser,
             })
           }
         >

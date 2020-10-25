@@ -47,7 +47,7 @@ export const SelectUserScreen = ({route, navigation}) => {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={selectUserRow.container}>
             <>{familyRows}</>
         </View>
     );
@@ -55,10 +55,17 @@ export const SelectUserScreen = ({route, navigation}) => {
 
 const selectUserRow = StyleSheet.create({
     familyrow: {
-        flex: 1,
         flexDirection: 'row',
         width: '100%',
+        height: '10%',
         justifyContent: 'center',
-        paddingVertical: 20
-    }
+        alignItems: 'center',
+        paddingVertical: 10
+    },
+    container: {
+        height: '100%',
+        backgroundColor: '#f7f9fc',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+      },
 });
