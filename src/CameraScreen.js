@@ -70,7 +70,7 @@ const CameraScreen = ({ route, navigation }) => {
   const snap = async (recognize_) => {
     try {
       if (cameraRef) {
-        console.log(cameraRef)
+        //console.log(cameraRef)
         let photo = await cameraRef.current.takePictureAsync({ base64: true });
         if (!faceDetected) {
           alert('No face detected!');

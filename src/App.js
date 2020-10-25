@@ -21,9 +21,7 @@ const onEmergency = (userName) => {
 
 const saveUser = async (userData) => {
   try {
-    const addressJson = await AsyncStorage.getItem(
-      'householdId',
-    )
+    const addressJson = await AsyncStorage.getItem('address');
     const address = Address.fromJson(JSON.parse(addressJson));
     const familyMembers = [
       new FamilyMember(
@@ -37,8 +35,8 @@ const saveUser = async (userData) => {
     ];
     const newHousehold = new Household(address, familyMembers);
     FirebaseProvider.getInstance().storeHousehold(newHousehold);
-  } catch {
-    console.log("Error getting address when saving user.");
+  } catch (error) {
+    console.log("Error getting address when saving user: " + error);
   }
 }
 
@@ -110,10 +108,8 @@ const HomeScreen = ({navigation}) => {
         addressInfo.postalCode
       );
       const hhId = address.toString();
-      await AsyncStorage.setItem(
-        'householdId',
-        hhId
-      )
+      await AsyncStorage.setItem('householdId', hhId);
+      await AsyncStorage.setItem('address', JSON.stringify(address));
       setHouseholdId(hhId);
       setDetectedUser(null);
     } catch (error) {
