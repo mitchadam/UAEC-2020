@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 import {FirebaseProvider} from './Firebase';
 import { styles } from './App'
 
-export default function AddUserScreen() {
+export default function AddUserScreen({route, navigation}) {
     const [firstNameText, setFirstNameText] = useState();
     const [lastNameText, setLastNameText] = useState();
     const [phnText, setPhnText] = useState();
@@ -30,7 +30,7 @@ export default function AddUserScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <View>
             <TextInput
                 placholder="First Name"
                 onChangeText={text => setFirstNameText(text)}

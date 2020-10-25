@@ -8,7 +8,8 @@ import { AsyncStorage } from 'react-native';
 import CameraScreen from "./CameraScreen";
 import AddUserScreen from "./AddUserScreen";
 import styles from './Styles'
-import { Household, Address } from './Household'
+import { FamilyMember, Household, Address } from './Household';
+import { FirebaseProvider } from './Firebase';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,9 @@ const onAddUser = async (navigation) => {
   console.log(
     await FirebaseProvider.getInstance().retrieveHousehold(household.address.toString())
   );
+}
+
+const saveUser = async (userData) => {
 }
 
 export default function App() {
@@ -148,7 +152,6 @@ const HomeScreen = ({navigation}) => {
         }
 
         {
-          !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
             onPress={() => onAddUser(navigation)}
