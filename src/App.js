@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
 import {Linking} from 'react-native'
 import { AddressScreen } from './AddressScreen'
+import { SelectUserScreen } from './SelectUser'
 import { AsyncStorage } from 'react-native';
 import CameraScreen from "./CameraScreen";
 import AddUserScreen from "./AddUserScreen";
@@ -50,6 +51,10 @@ export default function App() {
           component={AddressScreen}
         />
         <Stack.Screen
+          name="SelectUserScreen"
+          component={SelectUserScreen}
+        />
+        <Stack.Screen
           name="AddUserScreen"
           component={AddUserScreen}
         />
@@ -73,7 +78,22 @@ const HomeScreen = ({navigation}) => {
 
   const [householdId, setHouseholdId] = useState('');
 
-  const handleAddressButton = (navigation) => {
+  const handleSelectUserButton = () => {
+    navigation.navigate('SelectUserScreen', {onUserSelect: setUser, householdId: householdId});
+  }
+
+  const setUser = async (uId) => {
+    try {
+      await AsyncStorage.setItem(
+        'userId',
+        uId
+      );
+    } catch (error) {
+      console.log("Error setting user from PLS");
+    }
+  }
+
+  const handleAddressButton = () => {
     navigation.navigate('AddressScreen', {onAddressSave: setAddress});
   }
   
@@ -120,7 +140,7 @@ const HomeScreen = ({navigation}) => {
       </Text>
       <TouchableOpacity
         style={styles.setAddressButton}
-        onPress={() => handleAddressButton(navigation)}
+        onPress={() => handleAddressButton()}
       >
         <Text style={styles.btnText}>Set Address</Text>
       </TouchableOpacity>
@@ -149,6 +169,7 @@ const HomeScreen = ({navigation}) => {
           !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
+            onPress={() => handleSelectUserButton()}
           >
             <Text style={styles.btnText}>Select User</Text>
           </TouchableOpacity>
