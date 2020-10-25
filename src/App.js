@@ -7,15 +7,16 @@ import {Linking} from 'react-native'
 import { AddressScreen } from './AddressScreen'
 import { Permissions, Camera, FaceDetector, } from 'expo';
 import CameraScreen from "./CameraScreen";
+import styles from './Styles'
 
 const Stack = createStackNavigator();
 
 const onEmergency = () => {
-Linking.openURL(`tel:${7809348188}`)
-let userId = 0;
-FirebaseProvider.getInstance().sendEmail(userId);
+  Linking.openURL(`tel:${7809348188}`)
+  let userId = 0;
+  FirebaseProvider.getInstance().sendEmail(userId);
 
-console.log("Hello!");
+  console.log("Hello!");
 }
 
 const handleAddressButton = (navigation) => {
@@ -23,12 +24,33 @@ const handleAddressButton = (navigation) => {
 }
 
 const setAddress = (addressInfo) => {
-  console.log(addressInfo.street);
+  console.log(addressInfo);
 }
 
-const onAddUser = () => {
-  FirebaseProvider.getInstance().storeHighScore("nayan");
+const onAddUser = async () => {
+  FirebaseProvider.getInstance().storeHouseholdInfo({
+    address: {
+      street: "123 Main St",
+      city: "Edmonton",
+      province: "Alberta",
+      postalCode: "TN73X5"
+    },
+    familyMembers: [
+      {
+        firstName: "Nayan",
+        lastName: "Prakash",
+        phn: "123456789",
+        hin: "555555555",
+        medicalConditions: ["Depression"]
+      }
+    ]
+  });
+  const address = `${householdInfo.street} ${householdInfo.city} ${householdInfo.province} ${householdInfo.postalCode}`;
+  householdInfo = await FirebaseProvider.getInstance().retrieveHouseholdInfo(address);
+  console.log(householdInfo);
 }
+
+
 
 export default function App() {
 
@@ -55,6 +77,11 @@ export default function App() {
 const HomeScreen = ({ navigation }) => {
   const [detectedUser, setDetectedUser] = useState("");
 
+  const onSetDetectedUser = (usr) => {
+    console.log(usr);
+    setDetectedUser(usr);
+  }
+
 
   return (
     <View style={styles.container}>
@@ -70,8 +97,8 @@ const HomeScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-          style={styles.emergencyButton}
-          onPress={onEmergency}
+        style={styles.emergencyButton}
+        onPress={onEmergency}
       >
         <Text style={styles.btnTextLrg}>EMERGENCY</Text>
       </TouchableOpacity>
@@ -80,95 +107,29 @@ const HomeScreen = ({ navigation }) => {
        <TouchableOpacity
         style={styles.userButton}
         onPress={() =>
-          navigation.navigate('Camera', { setDetectedUser: (usr) => setDetectedUser(usr) })
+          navigation.navigate('Camera', {
+            onSetDetectedUser: onSetDetectedUser,
+            subjectId: "TESTUSR!"
+          })
         }
        >
         <Text style={styles.btnText}>Detect User</Text>
        </TouchableOpacity>
 
-       <TouchableOpacity
-        style={styles.userButton}
-        onPress={onAddUser}
-       >
-        <Text style={styles.btnText}>Add User</Text>
-       </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.userButton}
+        >
+          <Text style={styles.btnText}>Select User</Text>
+        </TouchableOpacity>
 
-       </View>
+        <TouchableOpacity
+          style={styles.userButton}
+          onPress={onAddUser}
+        >
+          <Text style={styles.btnText}>Add User</Text>
+        </TouchableOpacity>
 
+      </View>
     </View>
   );
 }
-
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f7f9fc',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
-  emergencyButton: {
-    backgroundColor: '#e04151',
-    height: '50%',
-    width: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-    	width: 0,
-    	height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-  },
-  row: {
-    flexDirection: "row",
-    width: '100%',
-    justifyContent: "space-evenly",
-  },
-  userButton: {
-      backgroundColor: '#4183e0',
-      width: '30%',
-      alignItems: 'center',
-      padding: 10,
-      borderRadius: 15,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowOpacity: 0.29,
-      shadowRadius: 4.65,
-
-      elevation: 7,
-  },
-  setAddressButton: {
-    backgroundColor: '#4183e0',
-    width: '80%',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-
-    elevation: 7,
-  },
-  btnText: {
-    fontSize: 15,
-    color: '#fff'
-  },
-  btnTextLrg: {
-    fontSize: 30,
-    color: '#fff'
-  },
-  detectedUser: {
-    fontSize: 20,
-    color: "#515251"
-  }
-});

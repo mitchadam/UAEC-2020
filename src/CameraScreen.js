@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as FaceDetector from 'expo-face-detector';
 import {NavigationContainer} from '@react-navigation/native';
 
 
-const CameraScreen = ({ navigation }) => {
+const CameraScreen = ({ route, navigation }) => {
 
   const BASE_URL = 'https://api.kairos.com/';
   const HEADERS = {
@@ -18,6 +18,7 @@ const CameraScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [faces, setFaces] = useState([])
   const cameraRef = useRef(null);
+  const {onSetDetectedUser, subjectId } = route.params;
 
   const faceDetected = ({ faces }) => {
     setFaces(faces) // instead of setFaces({faces})
@@ -25,6 +26,7 @@ const CameraScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
+
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setHasPermission(status === "granted");
@@ -32,17 +34,20 @@ const CameraScreen = ({ navigation }) => {
   }, []);
 
 //Enroll Method
-const enroll = async ({userId, base64}) => {
+const enroll = async (subjectId, base64) => {
+  console.log("Making enrol!")
   const rawResponse = await fetch(`${BASE_URL}enroll`, {
       method: 'POST',
       headers: HEADERS,
       body: JSON.stringify({
           "image": base64,
-          "subject_id": `MySocial_${userId}`,
-          "gallery_name": "MyGallery"
+          "subject_id": `${subjectId}`,
+          "gallery_name": "Emergency_Gallery"
       })
   });
+  console.log("ENroll done")
   const content = await rawResponse.json();
+  console.log(content);
   return content;
 }
 
@@ -78,15 +83,21 @@ const recognize = async (base64) => {
 
               console.log(response);
               if (response.images) {
-                // setDetectedUser(response.images[0].transaction.subject_id);
+                onSetDetectedUser(response.images[0].transaction.subject_id);
               } else {
-                // setDetectedUser("Face not recognized.")
+                onSetDetectedUser("Not recognized");
               }
               navigation.navigate('Home');
 
             } else {
               //TODO
-              console.log("ENROLL")
+              console.log(subjectId);
+              const response = await enroll(subjectId, base64);
+              if (response.face_id) {
+                console.log("Succeeded enrolling!")
+              } else {
+                console.log("Enroll failed")
+              }
             }
         }
     } catch (e) {
@@ -101,7 +112,9 @@ const recognize = async (base64) => {
   return (
     <Camera
       ref={cameraRef}
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+      }}
       type='front'
       onFacesDetected={faceDetected}
       FaceDetectorSettings={{
@@ -112,7 +125,7 @@ const recognize = async (base64) => {
         tracking: false
       }}
     >
-      {/* <View> */}
+      {/* <View style={styles.container}> */}
         <TouchableOpacity
           style={{
             flex: 1,
@@ -144,7 +157,13 @@ const recognize = async (base64) => {
   );
 }
 
-
-
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'rgba(52, 52, 52, 1)',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+  }
+});
 
 export default CameraScreen;
