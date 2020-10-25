@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
 import {Linking} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { AddressScreen } from './AddressScreen'
 
 const Stack = createStackNavigator();
 
@@ -15,8 +16,12 @@ FirebaseProvider.getInstance().sendEmail(userId);
 console.log("Hello!");
 }
 
-const handleAddressButton = () => {
+const handleAddressButton = (navigation) => {
+  navigation.navigate('AddressScreen', {onAddressSave: setAddress});
+}
 
+const setAddress = (addressInfo) => {
+  console.log(addressInfo.street);
 }
 
 export default function App() {
@@ -26,6 +31,10 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
+        />
+        <Stack.Screen 
+          name="AddressScreen"
+          component={AddressScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -38,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.setAddressButton}
-        onPress={handleAddressButton}
+        onPress={() => handleAddressButton(navigation)}
       >
         <Text style={styles.btnText}>Set Address</Text>
       </TouchableOpacity>
@@ -69,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f7f9fc',
@@ -112,6 +121,22 @@ const styles = StyleSheet.create({
       shadowRadius: 4.65,
 
       elevation: 7,
+  },
+  setAddressButton: {
+    backgroundColor: '#4183e0',
+    width: '80%',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
   btnText: {
     fontSize: 15,
