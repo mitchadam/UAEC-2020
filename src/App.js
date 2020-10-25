@@ -1,9 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
-import {Linking} from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FirebaseProvider} from './Firebase';
 
 const Stack = createStackNavigator();
 
@@ -16,7 +15,10 @@ console.log("Hello!");
 }
 
 const handleAddressButton = () => {
+}
 
+const onAddUser = () => {
+  FirebaseProvider.getInstance().storeHighScore("nayan");
 }
 
 export default function App() {
@@ -59,6 +61,7 @@ const HomeScreen = ({ navigation }) => {
 
        <TouchableOpacity
         style={styles.userButton}
+        onPress={onAddUser}
        >
         <Text style={styles.btnText}>Add User</Text>
        </TouchableOpacity>
