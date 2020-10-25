@@ -6,6 +6,7 @@ import {Linking} from 'react-native'
 import { AddressScreen } from './AddressScreen'
 import { AsyncStorage } from 'react-native';
 import CameraScreen from "./CameraScreen";
+import AddUserScreen from "./AddUserScreen";
 import styles from './Styles'
 import { Household, Address } from './Household'
 
