@@ -61,12 +61,28 @@ export class FirebaseProvider {
   }
 
   async sendEmail(userId) {
+    // get medical info from Firebase
+    const household = retrieveHouseholdByFace(faceId);
+    const address = household.address.toString();
+    let phn, hin, medicalConditions;
+    for (const familyMember of household.familyMembers) {
+        if (familyMember.faceId === userId) {
+            phn = familyMember.phn;
+            hin = familyMember.hin;
+            medicalConditions = familyMember.medicalConditions;
+        }
+    }
     // will automatically create id for the new document
     await this.addTo("mail", {
-      to: ["mli@ualberta.ca"],
+      to: ["rpshukla@ualberta.ca"],
       message: {
         subject: "EMERGENCY",
-        text: "There has been an emergency.",
+        text: "There has been an emergency.\n"
+              + "Name: " + userId + "\n"
+              + "Health Number: " + phn + "\n"
+              + "Insurance Number: " + hin + "\n"
+              + "Medical Conditions: " + medicalConditions + "\n"
+        ,
       }
     });
   }
