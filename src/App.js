@@ -1,18 +1,9 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
-import {Linking} from 'react-native'
-import { AddressScreen } from './AddressScreen'
 import { SelectUserScreen } from './SelectUser'
-import { AsyncStorage } from 'react-native';
-import CameraScreen from "./CameraScreen";
-=======
 import React, {useEffect, useState} from 'react';
 import {AsyncStorage, Linking, Text, TouchableOpacity, View} from 'react-native';
 import {AddressScreen} from './AddressScreen';
->>>>>>> 1f1447b09e13e7c32b79f12e3062b3efdf33b73b
 import AddUserScreen from "./AddUserScreen";
 import CameraScreen from "./CameraScreen";
 import {FirebaseProvider} from './Firebase';
@@ -196,6 +187,7 @@ const HomeScreen = ({navigation}) => {
         }
 
         {
+          !!householdId &&
           <TouchableOpacity
             style={styles.userButton}
             onPress={() => onAddUser(navigation)}
